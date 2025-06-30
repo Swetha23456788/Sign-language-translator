@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speech to Sign Language</title>
+    <style>
+        #sign-language-container img {
+            width: 500px;
+            height: 500px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Speech to Sign Language Translation</h1>
+    <button onclick="startTranslation()">Start Speaking</button>
+    <div id="sign-language-container"></div>
+
+    <script>
+        function startTranslation() {
+            fetch('/translate', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                    } else {
+                        const container = document.getElementById('sign-language-container');
+                        container.innerHTML = '';  // Clear previous frames
+                        data.images.forEach(imgStr => {
+                            const img = document.createElement('img');
+                            img.src = 'data:image/png;base64,' + imgStr;
+                            container.appendChild(img);
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error during translation:', error);
+                });
+        }
+    </script>
+</body>
+</html>
